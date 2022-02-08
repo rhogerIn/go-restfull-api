@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"html"
 	"log"
 	"strings"
 	"time"
@@ -36,6 +37,14 @@ func (u *User) BeforeSave() error {
 
 	u.Password = string(hashedPassword)
 	return nil
+}
+
+func (u *User) Prepare() {
+	u.ID		= 0
+	u.Nickname	= html.EscapeString(strings.TrimSpace(u.Nickname))
+	u.Email		= html.EscapeString(strings.TrimSpace(u.Email))
+	u.CreatedAt	= time.Now()
+	u.UpdatedAt = time.Now()
 }
 
 func (u *User) Validate(action string) error {
@@ -114,7 +123,7 @@ func (u *User) FindUserById(db *gorm.DB, uid uint32) (*User, error) {
 	return u, err
 }
 
-func (u *User) UpdatedUser(db *gorm.DB, uid int32) (*User, error) {
+func (u *User) UpdateUser(db *gorm.DB, uid int32) (*User, error) {
 	// lets hash before save the new user
 	err := u.BeforeSave()
 	if err != nil {
