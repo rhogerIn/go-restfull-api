@@ -12,7 +12,7 @@ import (
 	"github.com/rhogerin/restful/api/auth"
 	"github.com/rhogerin/restful/api/responses"
 	"github.com/rhogerin/restful/api/utils/formaterror"
-	"github.com/victorsteven/fullstack/api/models"
+	"github.com/rhogerin/restful/api/models"
 )
 
 func (server *Server) CreatePost(w http.ResponseWriter, r *http.Request) {
@@ -75,7 +75,7 @@ func (server *Server) GetPost(w http.ResponseWriter, r *http.Request) {
 	}
 	post := models.Post{}
 
-	postReceived, err := post.FindPostByID(server.DB, pid)
+	postReceived, err := post.FindPostById(server.DB, pid)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
@@ -144,7 +144,7 @@ func (server *Server) UpdatePost(w http.ResponseWriter, r *http.Request) {
 
 	postUpdate.ID = post.ID //this is important to tell the model the post id to update, the other update field are set above
 
-	postUpdated, err := postUpdate.UpdateAPost(server.DB)
+	postUpdated, err := postUpdate.UpdatePost(server.DB)
 
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
